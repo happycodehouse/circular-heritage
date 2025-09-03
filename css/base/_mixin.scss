@@ -1,5 +1,9 @@
 @charset "UTF-8";
 @use "sass:math";
+@use "sass:string";
+@use "sass:map";
+@use "sass:meta";
+@use "variable" as *;
 
 // mediaQuery
 $breakpoints: (
@@ -21,17 +25,17 @@ $breakpoints: (
     $query: "";
 
     @if $from {
-        @if type-of($from) == number {
+        @if meta.type-of($from) == number {
             $min-width: $from;
         } @else {
-            $min-width: map-get($breakpoints, $from);
+            $min-width: map.get($breakpoints, $from);
         }
     }
     @if $until {
-        @if type-of($until) == number {
+        @if meta.type-of($until) == number {
             $max-width: $until - 1px;
         } @else {
-            $max-width: map-get($breakpoints, $until) - 1px;
+            $max-width: map.get($breakpoints, $until) - 1px;
         }
     }
 
@@ -53,7 +57,7 @@ $breakpoints: (
 
     @if ($media-type == "all" and $query != "") {
         $media-type: "";
-        $query: str-slice(unquote($query), 6);
+        $query: string.slice(string.unquote($query), 6);
     }
 
     @media #{$media-type + $query} {
@@ -76,13 +80,13 @@ $breakpoints: (
     @if $line-height == null {
         line-height: 1;
     } @else {
-        line-height: calc($line-height / $font-size);
+        line-height: math.div($line-height, $font-size);
     }
 
     @if $letter-spacing == null {
-        letter-spacing: #{calc(-0.02)}em; // -2%;
+        letter-spacing: -0.02em; // -2%;
     } @else {
-        letter-spacing: #{calc($letter-spacing / 1000)}em;
+        letter-spacing: math.div($letter-spacing, 1000) * 1em;
     }
 }
 
@@ -98,7 +102,7 @@ $breakpoints: (
 
     @if ($lines) {
         // 여러 줄 말줄임
-        $em: $lh / $font-size;
+        $em: math.div($lh, $font-size);
 
         overflow: hidden;
         display: -webkit-box;
@@ -117,12 +121,12 @@ $breakpoints: (
         word-wrap: normal;
     }
 }
+
 // PX TO VW (to vw)
 @function to_vw($px-size) {
     $minus: 0;
     $size: 0;
     $resultVw: 0;
-    $a: a;
 
     @if $px-size < 0 {
         //음수
@@ -130,24 +134,14 @@ $breakpoints: (
         $minus: 1;
     }
 
-    // @if $minus > 0 {
-    //     $size: unquote("calc(calc(#{$px-size}px * var(--base-ratio)) * -1)");
-    //     $resultVw: unquote("calc(calc(calc(#{$px-size} / var(--base-size)) * var(--base-percent)) * -1)");
-    // } @else {
-    //     $size: unquote("calc(#{$px-size}px * var(--base-ratio))");
-    //     $resultVw: unquote("calc(calc(#{$px-size} / var(--base-size)) * var(--base-percent))");
-    // }
-
-    // @return m#{$a}x(#{$size}, #{$resultVw});
-
     @if $minus > 0 {
-        $size: unquote("calc(calc(#{$px-size}px * var(--base-ratio)) * -1)");
-        $resultVw: unquote("calc(calc(calc(#{$px-size} / var(--base-size)) * var(--base-percent)) * -1)");
-        @return m#{$a}x(#{$resultVw});
+        $size: string.unquote("calc(calc(#{$px-size}px * var(--base-ratio)) * -1)");
+        $resultVw: string.unquote("calc(calc(calc(#{$px-size} / var(--base-size)) * var(--base-percent)) * -1)");
+        @return max(#{$resultVw});
     } @else {
-        $size: unquote("calc(#{$px-size}px * var(--base-ratio))");
-        $resultVw: unquote("calc(calc(#{$px-size} / var(--base-size)) * var(--base-percent))");
-        @return m#{$a}x(#{$size}, #{$resultVw});
+        $size: string.unquote("calc(#{$px-size}px * var(--base-ratio))");
+        $resultVw: string.unquote("calc(calc(#{$px-size} / var(--base-size)) * var(--base-percent))");
+        @return max(#{$size}, #{$resultVw});
     }
 }
 
@@ -196,14 +190,14 @@ $breakpoints: (
     @for $i from 1 to $gridCntP + 1 {
         .col-#{$i} {
             flex: 0 0 auto;
-            flex-basis: calc(100% / $gridCntP * $i);
-            width: calc(100% / $gridCntP * $i);
+            flex-basis: math.div(100%, $gridCntP) * $i;
+            width: math.div(100%, $gridCntP) * $i;
             padding: 0 calc(to_vw($gridGap) * 0.5);
             box-sizing: border-box;
             position: relative;
         }
         .offset-#{$i} {
-            margin-left: calc(100% / $gridCntP * $i);
+            margin-left: math.div(100%, $gridCntP) * $i;
             position: relative;
         }
     }

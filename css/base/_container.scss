@@ -1,3 +1,6 @@
+@use "../base/mixin" as *;
+@use "../base/variable" as *;
+
 html {
     --window-w: 100vw;
     --window-h: 100vh;
@@ -152,7 +155,7 @@ html {
     @include media(tablet, false) {
         display: flex;
         flex-wrap: wrap;
-        margin: 0 calc(to_vw($gridGap) * 0.5 * -1);
+        margin: 0 calc(to_vw($gridGap) * -0.5);
     }
 }
 
@@ -195,15 +198,15 @@ html {
 
     @include media(tablet, false) {
         .row {
-            margin: 0 calc(to_vw($gridGap) * 0.5 * -1);
+            margin: 0 calc(to_vw($gridGap) * -0.5);
 
             .content {
                 background-color: pink;
             }
 
             .col-1 {
-                flex-basis: calc(100% / $gridCntP * 1);
-                width: calc(100% / ($gridCntP - 1) * 1);
+                flex-basis: calc(100% / #{$gridCntP});
+                width: calc(100% / #{$gridCntP - 1});
                 padding: 0 calc(to_vw($gridGap) * 0.5);
 
                 &:nth-of-type(n + #{$gridCntP + 1}) {
@@ -215,15 +218,15 @@ html {
 
     @include media(mobile, tablet) {
         .row {
-            margin: 0 calc(to_vw($gridGap) * 0.5 * -1);
+            margin: 0 calc(to_vw($gridGap) * -0.5);
 
             .content {
                 background-color: #7878ff;
             }
 
             .col-1 {
-                flex-basis: calc(100% / $gridCntT * 1);
-                width: calc(100% / ($gridCntT - 1) * 1);
+                flex-basis: calc(100% / #{$gridCntT});
+                width: calc(100% / #{$gridCntT - 1});
                 padding: 0 calc(to_vw($gridGap) * 0.5);
 
                 &:nth-of-type(n + #{$gridCntT + 1}) {
@@ -235,15 +238,15 @@ html {
 
     @include media(false, mobile) {
         .row {
-            margin: 0 calc(to_vw($gridGap) * 0.5 * -1);
+            margin: 0 calc(to_vw($gridGap) * -0.5);
 
             .content {
                 background-color: #7878ff;
             }
 
             .col-1 {
-                flex-basis: calc(100% / $gridCntM * 1);
-                width: calc(100% / ($gridCntM - 1) * 1);
+                flex-basis: calc(100% / #{$gridCntM});
+                width: calc(100% / #{$gridCntM - 1});
                 padding: 0 calc(to_vw($gridGap) * 0.5);
 
                 &:nth-of-type(n + #{$gridCntM + 1}) {
