@@ -1,0 +1,40 @@
+@charset "UTF-8";
+
+// Color
+$black: #0A0A0A;
+//$white: #FFFFFF;
+$white: #FAFAFA;
+$gray: #FAFAFA;
+$gray-50: #E8E8E8;
+$gray-100: #DDDDDD;
+
+$txtColor-100: #0A0A0A;
+$txtColor-200: #666666;
+$txtColor-300: #DDDDDD;
+
+$lineColor-100: #f3f3f3;
+
+//$highlightColor : #E53888;
+$highlightColor : #91C8E4;
+
+// Base
+$font-size: 0;
+$fontSize-default: 16;
+
+// Spacing
+$space-100: 20;
+
+$spaceM-100: 12;
+$spaceM-200: 24;
+$spaceM-300: 36;
+
+// Path
+$fontPathCommon: "/resources/fonts/";
+$imgPathCommon: "../images/";
+
+// Grid
+$gridCntP: 12;
+$gridCntT: 8;
+$gridCntM: 4;
+$gridGap: 20;
+$gridMargin: 50;

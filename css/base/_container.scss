@@ -1,0 +1,255 @@
+html {
+    --window-w: 100vw;
+    --window-h: 100vh;
+}
+
+:root {
+    --base-ratio: 0.75;
+    --base-size: 1536;
+    --base-percent: 100vw;
+
+    @include media(false, tablet) {
+        --base-ratio: 1;
+        --base-size: 1;
+        --base-percent: 1px;
+    }
+}
+
+.pc_on {
+    display: block;
+}
+
+.tablet_on {
+    display: none;
+}
+
+.m_on {
+    display: none;
+}
+
+.pc_none {
+    display: none;
+}
+
+.tablet_m_on {
+    display: none;
+}
+
+.tablet_none {
+    display: block;
+}
+
+.m_none {
+    display: block;
+}
+
+.laptop_on {
+    display: none;
+}
+
+.laptop_none {
+    display: block;
+}
+
+@include media(false, laptop) {
+    .laptop_on {
+        display: block;
+    }
+
+    .laptop_none {
+        display: none;
+    }
+}
+
+@include media(false, tablet) {
+    .laptop_none {
+        display: block;
+    }
+
+    .pc_on {
+        display: none;
+    }
+
+    .tablet_m_on {
+        display: block;
+    }
+
+    .tablet_on {
+        display: block;
+    }
+
+    .m_on {
+        display: none;
+    }
+
+    .pc_none {
+        display: block;
+    }
+
+    .tablet_none {
+        display: none;
+    }
+
+    .m_none {
+        display: block;
+    }
+}
+
+@include media(false, mobile) {
+    .laptop_none {
+        display: block;
+    }
+
+    .pc_on {
+        display: none;
+    }
+
+    .tablet_on {
+        display: none;
+    }
+
+    .m_on {
+        display: block;
+    }
+
+    .pc_none {
+        display: block;
+    }
+
+    .tablet_none {
+        display: block;
+    }
+
+    .m_none {
+        display: none;
+    }
+}
+
+.sticky {
+    position: sticky;
+    top: to_vw(-1);
+    left: 0;
+    width: 100%;
+    height: calc(100vh + to_vw(2));
+    overflow: hidden;
+}
+
+.row_wrap {
+    padding: 0 to_vw(80);
+
+    @include media(false, tablet) {
+        padding: 0 to_vw(40);
+    }
+
+    @include media(false, mobile) {
+        padding: 0 to_vw(20);
+    }
+}
+
+.row {
+    position: relative;
+
+    @include media(tablet, false) {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 calc(to_vw($gridGap) * 0.5 * -1);
+    }
+}
+
+/* grid */
+.grid_guide {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 999999;
+    display: none;
+
+    &.on {
+        display: block;
+    }
+
+    .container {
+        width: 100%;
+        height: 100%;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+
+        .content {
+            padding: 0;
+            height: 100vh;
+            opacity: 0.5;
+        }
+
+        .col-1 {
+            flex: 0 0 auto;
+            box-sizing: border-box;
+            position: relative;
+        }
+    }
+
+    @include media(tablet, false) {
+        .row {
+            margin: 0 calc(to_vw($gridGap) * 0.5 * -1);
+
+            .content {
+                background-color: pink;
+            }
+
+            .col-1 {
+                flex-basis: calc(100% / $gridCntP * 1);
+                width: calc(100% / ($gridCntP - 1) * 1);
+                padding: 0 calc(to_vw($gridGap) * 0.5);
+
+                &:nth-of-type(n + #{$gridCntP + 1}) {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    @include media(mobile, tablet) {
+        .row {
+            margin: 0 calc(to_vw($gridGap) * 0.5 * -1);
+
+            .content {
+                background-color: #7878ff;
+            }
+
+            .col-1 {
+                flex-basis: calc(100% / $gridCntT * 1);
+                width: calc(100% / ($gridCntT - 1) * 1);
+                padding: 0 calc(to_vw($gridGap) * 0.5);
+
+                &:nth-of-type(n + #{$gridCntT + 1}) {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    @include media(false, mobile) {
+        .row {
+            margin: 0 calc(to_vw($gridGap) * 0.5 * -1);
+
+            .content {
+                background-color: #7878ff;
+            }
+
+            .col-1 {
+                flex-basis: calc(100% / $gridCntM * 1);
+                width: calc(100% / ($gridCntM - 1) * 1);
+                padding: 0 calc(to_vw($gridGap) * 0.5);
+
+                &:nth-of-type(n + #{$gridCntM + 1}) {
+                    display: none;
+                }
+            }
+        }
+    }
+}

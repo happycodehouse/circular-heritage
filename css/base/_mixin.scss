@@ -1,0 +1,227 @@
+@charset "UTF-8";
+@use "sass:math";
+
+// mediaQuery
+$breakpoints: (
+    mobile: 768px,
+    tablet: 1025px,
+    laptop: 1536px,
+    sm: 360px,
+);
+
+@mixin media($from: false, $until: false, $and: false, $or: false, $etc: false, $media-type: all) {
+    /// ❓ 선택값
+    /// $from, $until : $breakpoints or number
+    /// $and : 조건 연산자
+    /// 예) @include media($from: "sm", $until: 768px, $and:"orientation: landscape")
+    /// media(false, tablet, $etc:", (max-width: 1366px) and (pointer: coarse)")
+    ///
+    $min-width: 0;
+    $max-width: 0;
+    $query: "";
+
+    @if $from {
+        @if type-of($from) == number {
+            $min-width: $from;
+        } @else {
+            $min-width: map-get($breakpoints, $from);
+        }
+    }
+    @if $until {
+        @if type-of($until) == number {
+            $max-width: $until - 1px;
+        } @else {
+            $max-width: map-get($breakpoints, $until) - 1px;
+        }
+    }
+
+    @if $min-width != 0 {
+        $query: "#{$query} and (min-width: #{$min-width})";
+    }
+    @if $max-width != 0 {
+        $query: "#{$query} and (max-width: #{$max-width})";
+    }
+    @if $and {
+        $query: "#{$query} and (#{$and})";
+    }
+    @if $or {
+        $query: "#{$query} or (#{$or})";
+    }
+    @if $etc {
+        $query: "#{$query} #{$etc}";
+    }
+
+    @if ($media-type == "all" and $query != "") {
+        $media-type: "";
+        $query: str-slice(unquote($query), 6);
+    }
+
+    @media #{$media-type + $query} {
+        @content;
+    }
+}
+
+// Font Size
+@mixin fontSize($font-size: null, $line-height: null, $letter-spacing: null) {
+    /// ❓ 선택값
+    /// $font-size, $letter-spacing, $line-height : figma value
+    /// $margin-bottom : marginBlock * value
+    //font-size: $font-size * 1px;
+    @if $font-size == null {
+        font-size: 1rem;
+    } @else {
+        font-size: to_vw($font-size);
+    }
+
+    @if $line-height == null {
+        line-height: 1;
+    } @else {
+        line-height: calc($line-height / $font-size);
+    }
+
+    @if $letter-spacing == null {
+        letter-spacing: #{calc(-0.02)}em; // -2%;
+    } @else {
+        letter-spacing: #{calc($letter-spacing / 1000)}em;
+    }
+}
+
+// Ellipsis
+@mixin ellipsis($lines: false, $font-size: null, $lh: null, $use: true) {
+    /// @ 값이 없을 경우
+    /// 기본적으로 1줄 말줄임
+
+    /// @ 값이 2이상 일 경우
+    /// $font-size : em 계산으로 해당 font-size 필요
+    /// $lh : line-height;
+    /// 해당하는 값만 큼 말줄임 => @include ellipsis(3); 👈 3줄 말줄임
+
+    @if ($lines) {
+        // 여러 줄 말줄임
+        $em: $lh / $font-size;
+
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: $lines;
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        word-wrap: normal;
+        line-height: $em;
+        max-height: ($em * $lines) * 1em;
+    } @else {
+        // 한 줄 말줄임
+        overflow: hidden;
+        display: block;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-wrap: normal;
+    }
+}
+// PX TO VW (to vw)
+@function to_vw($px-size) {
+    $minus: 0;
+    $size: 0;
+    $resultVw: 0;
+    $a: a;
+
+    @if $px-size < 0 {
+        //음수
+        $px-size: $px-size * -1;
+        $minus: 1;
+    }
+
+    // @if $minus > 0 {
+    //     $size: unquote("calc(calc(#{$px-size}px * var(--base-ratio)) * -1)");
+    //     $resultVw: unquote("calc(calc(calc(#{$px-size} / var(--base-size)) * var(--base-percent)) * -1)");
+    // } @else {
+    //     $size: unquote("calc(#{$px-size}px * var(--base-ratio))");
+    //     $resultVw: unquote("calc(calc(#{$px-size} / var(--base-size)) * var(--base-percent))");
+    // }
+
+    // @return m#{$a}x(#{$size}, #{$resultVw});
+
+    @if $minus > 0 {
+        $size: unquote("calc(calc(#{$px-size}px * var(--base-ratio)) * -1)");
+        $resultVw: unquote("calc(calc(calc(#{$px-size} / var(--base-size)) * var(--base-percent)) * -1)");
+        @return m#{$a}x(#{$resultVw});
+    } @else {
+        $size: unquote("calc(#{$px-size}px * var(--base-ratio))");
+        $resultVw: unquote("calc(calc(#{$px-size} / var(--base-size)) * var(--base-percent))");
+        @return m#{$a}x(#{$size}, #{$resultVw});
+    }
+}
+
+// Flex
+@mixin flex($mode: flex, $justify-content: start, $align-items: normal, $wrap: wrap) {
+    display: $mode;
+    flex-wrap: $wrap;
+    justify-content: $justify-content;
+    align-items: $align-items;
+}
+
+// Background
+@mixin background($img, $bgp: null, $bgr: null, $bgz: null) {
+    /// ❗ 필수값
+    /// $img : 이미지 경로 및 파일명 => 'kr/common/logo.png'
+
+    /// ❓ 선택값
+    /// 하나씩 쓸 경우엔 지시자 지정 필수 => @include background('kr/common/logo.png', $bgr: no-repeat); 👈 "$bgr"
+    /// $bgp : position, $bgr : repeat, $bgz : size
+
+    @if $bgp == null {
+        // background position 값이 없을 때
+        background-image: url("#{$imgPathCommon}#{$img}");
+        background-repeat: $bgr;
+    } @else if $bgr == null {
+        // background repeat 값이 없을 때
+        background-image: url("#{$imgPathCommon}#{$img}");
+        background-position: $bgp;
+    } @else {
+        // position, repeat 값이 둘 다 있을 때
+        background: url("#{$imgPathCommon}#{$img}") $bgp $bgr;
+    }
+
+    // background size 값이 있으면 반환, 없으면 생략
+    background-size: $bgz;
+}
+
+// wordBreak
+@mixin wordBreak {
+    word-break: keep-all;
+    word-wrap: break-word;
+}
+
+// Grid
+@include media(tablet, false) {
+    @for $i from 1 to $gridCntP + 1 {
+        .col-#{$i} {
+            flex: 0 0 auto;
+            flex-basis: calc(100% / $gridCntP * $i);
+            width: calc(100% / $gridCntP * $i);
+            padding: 0 calc(to_vw($gridGap) * 0.5);
+            box-sizing: border-box;
+            position: relative;
+        }
+        .offset-#{$i} {
+            margin-left: calc(100% / $gridCntP * $i);
+            position: relative;
+        }
+    }
+}
+
+@mixin button-style($shadow-type: normal) {
+    display: inline-block;
+    padding: to_vw(12) to_vw(24);
+    background: #FAFAFA;
+    border-radius: 5px;
+    text-align: center;
+    @include fontSize(12);
+    font-weight: 600;
+    color: #707070;
+
+    @if $shadow-type == inset {
+        box-shadow: inset -3px -3px 7px #fafafa73, inset 3px 3px 5px rgba(94, 104, 121, .288);
+    } @else {
+        box-shadow: -3px -3px 7px #fafafa73, 3px 3px 5px rgba(94, 104, 121, .288);
+    }
+}
