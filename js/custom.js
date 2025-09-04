@@ -51,16 +51,15 @@ custom.utils = {
             $quarterBox = $("#quarterBox"),
             $circleImgList = $("#circle").find("ul"),
             $circleImg = $circleImgList.find("li"),
-            $descArea = $secHeritage.find(".desc_area");
-        $desc = $descArea.find(".desc"),
+            $descArea = $secHeritage.find(".desc_area"),
+            $desc = $descArea.find(".desc"),
             $descTxt = $desc.find("li");
 
         let pcSecHeritageTl,
             moSecHeritageTl,
             moDescTl,
-            mouseenterFlag = false,
             isPc = false,
-            isScrolling = false;
+            mouseenterTimeout;
 
         function pcInit(){
             $timelineWrap.removeClass("fixed");
@@ -75,34 +74,30 @@ custom.utils = {
         }
 
         $desc.find("li").on("mouseenter", function () {
-            let _$this = $(this);
-            let _$thisYear = $(this).data("year");
+            clearTimeout(mouseenterTimeout);
+            mouseenterTimeout = setTimeout(() => {
+                let _$this = $(this);
+                let _$thisYear = $(this).data("year");
 
-            mouseenterFlag = true;
+                _$this.siblings().removeClass("active");
+                _$this.addClass("active");
 
-            _$this.siblings().removeClass("active");
-            _$this.addClass("active");
-
-            $circleImg.each(function () {
-                if ($(this).data("year-img") === _$thisYear) {
-                    $circleImg.removeClass("active");
-                    $(this).addClass("active");
-                }
-            });
+                $circleImg.each(function () {
+                    if ($(this).data("year-img") === _$thisYear) {
+                        $circleImg.removeClass("active");
+                        $(this).addClass("active");
+                    }
+                });
+            }, 250);
         });
 
         function scrollToItem(idx) {
-            if (isScrolling) return; // 현재 스크롤 중이면 무시
-
-            isScrolling = true; // 스크롤 시작
             let _$scroll = $timelineWrap.find(".scroll");
             let _$item = $timelineItem.eq(idx);
 
             if (_$item.length > 0) {
                 let _scrollLeft = _$item.position().left + _$item.outerWidth() / 2 - _$scroll.outerWidth() / 2;
-                _$scroll.animate({ scrollLeft: _scrollLeft }, 300, () => {
-                    isScrolling = false;
-                });
+                _$scroll.animate({ scrollLeft: _scrollLeft }, 300);
             }
         }
 
@@ -113,12 +108,11 @@ custom.utils = {
 
             if (isPc) {
                 $timelineItem.removeClass("active").eq(idx).addClass("active");
-                if (mouseenterFlag === false) {
-                    $circleImg.removeClass("active");
-                    $circleImgList.eq(idx).find("li").eq(0).addClass("active");
-                    $descTxt.removeClass("active");
-                    $desc.eq(idx).find("li").eq(0).addClass("active");
-                }
+                $circleImg.removeClass("active");
+                $circleImgList.eq(idx).find("li").eq(0).addClass("active");
+                $descTxt.removeClass("active");
+                $desc.eq(idx).find("li").eq(0).addClass("active");
+
                 gsap.to($descArea, {
                     translateY: 100 * -idx + "vh",
                     ease: "power1.easeOut"
@@ -157,11 +151,7 @@ custom.utils = {
                 $timelineItem.each(function(idx) {
                     pcSecHeritageTl.to({}, {
                         onStart: () => activeTimeline(idx),
-                        onComplete: () => {
-                            mouseenterFlag = false;
-                        },
                         onReverseComplete: () => {
-                            mouseenterFlag = false;
                             activeTimeline(idx - 1);
                         }
                     });
