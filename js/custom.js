@@ -176,6 +176,7 @@ custom.utils = {
                         }
                     }
                 });
+
                 $desc.each(function (idx, item) {
                     moDescTl = gsap.timeline({
                         scrollTrigger: {
@@ -214,14 +215,12 @@ custom.utils = {
         function breakPoint(mediaQuery){
             if (mediaQuery.matches) {
                 // pc
-                console.log("pc");
                 pcInit();
                 isPc = true;
             } else {
                 // mo
                 moInit();
                 isPc = false;
-                console.log("mo");
             }
         }
 
