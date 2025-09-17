@@ -55,13 +55,13 @@
         position: relative;
         z-index: 1;
         height: 100%;
-        padding-top: to_vw(180);
+        padding-top: to_vw(220);
     }
 
     .txt_wrap {
         h2 {
-            @include fontSize(22);
-            font-weight: 300;
+            @include fontSize(28);
+            font-weight: 500;
             color: variable.$black;
         }
     }
@@ -75,6 +75,10 @@
             .bg {
                 background-attachment: initial;
             }
+        }
+
+        .row_wrap {
+            padding-top: 20vh;
         }
     }
 }
