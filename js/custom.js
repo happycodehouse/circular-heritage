@@ -45,6 +45,7 @@ custom.utils = {
     },
     circularMotion: () => {
         const
+            $header = $("header"),
             $secHeritage = $(".sec_heritage"),
             $timelineWrap = $("#timelineWrap"),
             $timelineItem = $timelineWrap.find("li"),
@@ -170,9 +171,11 @@ custom.utils = {
                         markers: false,
                         onEnter: () => {
                             $timelineWrap.addClass("fixed");
+                            $header.css("opacity", "0");
                         },
                         onLeaveBack: () => {
                             $timelineWrap.removeClass("fixed");
+                            $header.css("opacity", "1");
                         }
                     }
                 });
