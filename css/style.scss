@@ -38,6 +38,7 @@ header {
 
     a {
         grid-area: github;
+        pointer-events: auto;
 
         &:hover {
             text-decoration: underline;
