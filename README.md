@@ -16,6 +16,6 @@
 - Heritage timeline storytelling
 
 ## Tech Stack
-- **GSAP** (animation)
+- **GSAP** (animations)
 - **JavaScript (ES6+)**
 - **SCSS**
